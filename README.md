@@ -25,10 +25,11 @@ Firmware application for the Raspberry Pi Pico WH.
 
 ### 🔧 Description
 
-The Pico WH functions as both a microcontroller and an IoT gateway, performing the following tasks:
+The Pico WH functions as both a microcontroller, an IoT gateway, and RTK bridge, performing the following tasks:
 
 - Connects to the Movesense device using the GATT SensorData service to retrieve sensor data.
 - Reads location data from a GNSS module (Bynav M10).
+- Opens a TCP socket connection with an NTRIP caster, sends GNSS data to the caster and gives correction data back to module.
 - Forwards combined data to a pre-configured MQTT broker over Wi-Fi.
 
 Tested on MicroPython firmware v1.22.
