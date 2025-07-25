@@ -1,16 +1,20 @@
 import machine
 import time
 import uasyncio as asyncio
+
 import ubinascii
 import usocket
 import uselect
 import json
+
 from data_queue import gnss_queue, state
 from password import NTRIP_CONFIG
+from config import TX_PIN, RX_PIN, UART_BAUD_RATE
 
-uart1 = machine.UART(1, baudrate=115200, tx=machine.Pin(4), rx=machine.Pin(5))  # RX pin from GNSS TX
 
-# Event to indicate GNSS fix is ready
+# UART setup (GPIO 4 and 5 on Raspberry Pi Pico WH, baud rate 115200)
+uart1 = machine.UART(1, baudrate=UART_BAUD_RATE, tx=machine.Pin(TX_PIN), rx=machine.Pin(RX_PIN))
+
 gnss_ready_event = asyncio.ThreadSafeFlag()
 
 # PARSE GPGGA DATA FUNCTION
