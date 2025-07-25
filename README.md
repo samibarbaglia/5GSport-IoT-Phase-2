@@ -1,22 +1,51 @@
-# Innovation Iot Project
+# 🌐 Innovation IoT Project
 
-## movesense-device-app
+This project integrates a **Movesense device** with a **Raspberry Pi Pico WH**, forming an IoT system that collects movement and GNSS data and forwards it to an MQTT broker over Wi-Fi.
 
-Application on movesense with build firmware
+---
 
-## picow-app
+## 📱 movesense-device-app
 
-Application on Raspberry Pi Pico WH
+Firmware application for the Movesense device.
 
-Pico W serves as a microcontroller retrieving data sensors such as Movesense sensor using GATT service protocol
+### 🔧 Description
 
-Micropython firmware v1.22
+The application utilizes the GATT SensorData protocol to communicate with a client device (Raspberry Pi Pico WH). It includes a movement detection feature and implements power-saving behavior:
 
-### Packages required in Raspberry Pi PicoW
+- If no movement is detected and BLE connection is lost for 60 seconds, the Movesense device enters PowerOff mode to conserve battery.
+- The device automatically wakes from PowerOff when:
+  - Movement is detected, or
+  - A BLE connection is re-established.
 
-micropython-umqtt.simple
-micropython-umqtt.robust
+---
 
-### Features and usability
+## 🧠 picoW-app
 
-To trigger/untrigger sensor connection and data reading, press button sw_1 in microcontroller board
+Firmware application for the Raspberry Pi Pico WH.
+
+### 🔧 Description
+
+The Pico WH functions as both a microcontroller and an IoT gateway, performing the following tasks:
+
+- Connects to the Movesense device using the GATT SensorData service to retrieve sensor data.
+- Reads location data from a GNSS module (DFRobot TEL0157).
+- Forwards combined data to a pre-configured MQTT broker over Wi-Fi.
+
+Tested on MicroPython firmware v1.22.
+
+### 🧠 MicroPython firmware v1.22
+
+🔗 The BLE stack is re-configured with built firmware `micropython-v1.22-blestack.uf2`, allow the Pico WH to connect to up to 3 peripherals simultaneously with GATT protocol.
+
+### 📦 Required MicroPython Packages
+
+- `micropython-umqtt.simple`
+- `micropython-umqtt.robust`
+
+### 🎛 Features & Usability
+
+| Button | Function                                                |
+| ------ | ------------------------------------------------------- |
+| `sw_0` | Scan for available Movesense BLE devices                |
+| `sw_1` | Start/stop sensor data collection and MQTT transmission |
+| `sw_2` | Reconnect to Wi-Fi and the MQTT broker                  |
