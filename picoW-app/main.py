@@ -22,8 +22,6 @@ button_pressed = False
 last_pressed_btn = 0
 DEBOUNCE_MS = 500
 
-#moi
-
 def button_handler(pin):
     """IRQ callback for button presses."""
     global last_pressed_btn

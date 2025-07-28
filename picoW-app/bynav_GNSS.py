@@ -53,10 +53,15 @@ async def gnss_setup():
         "Ntrip-GGA: {}\r\n"
         "\r\n"
     ).format(NTRIP_CONFIG['mountpoint'], NTRIP_CONFIG['host'], auth, gga)
-    
+
+    # Ping opencater
+    addr = usocket.getaddrinfo("opencaster.nls.fi", 2101)
+    ip_address = addr[0][-1][0]
+
     # TCP connection to NTRIP caster
     sock = usocket.socket()
-    sock.connect(("195.156.69.210", NTRIP_CONFIG['port'])) # IP is pinged opencaster.nsl.fi IP
+    sock.connect((ip_address, NTRIP_CONFIG['port']))
+    # sock.connect(("195.156.69.210", NTRIP_CONFIG['port']))
     sock.send(request.encode())
     while True:
         line = sock.readline()
