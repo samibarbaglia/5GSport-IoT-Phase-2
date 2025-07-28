@@ -3,9 +3,10 @@ import bluetooth
 import uasyncio as asyncio
 from micropython import const
 from struct import unpack
-import machine
+import machine  
 import json
 from data_queue import ecg_queue, imu_queue, hr_queue, state
+
 
 # GSP Service and Characteristic UUIDs
 _GSP_SERVICE_UUID = bluetooth.UUID("34802252-7185-4d5d-b431-630e7050e8f0")
@@ -72,7 +73,7 @@ class MovesenseDevice:
         else:
             self.log("Invalid sensor type")
             return
-
+        
         self.log(f"Subscribing to {sensor_type} with command: {cmd.hex()}")
         await self.write_char.write(cmd)
 
@@ -169,5 +170,3 @@ class MovesenseDevice:
                 await asyncio.sleep_ms(100)
             await self.connection.disconnect()
             self.log("Disconnected")
-
-

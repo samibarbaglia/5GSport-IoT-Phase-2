@@ -10,14 +10,13 @@ _MOVESENSE_SERIES = "174630000192"
 _MOVESENSE_SERIES_LIST = ["174630000192", "213230000105"]
 
 # Sensor Data Rate
-IMU_RATE = 26  # Sample rate can be 13, 26, 52, 104, 208, 416, 833, 1666
-ECG_RATE = 125  # Sample rate can be 125, 128, 200, 250, 256, 500, 512
+IMU_RATE = 26   #Sample rate can be 13, 26, 52, 104, 208, 416, 833, 1666
+ECG_RATE = 125  #Sample rate can be 125, 128, 200, 250, 256, 500, 512
 
 # Onboard LED
 led = machine.Pin("LED", machine.Pin.OUT)
 
 SCAN_DURATION_MS = 10000
-
 
 async def find_movesense(ms_series):
     print(f"Scanning BLE to find Movesense sensors {ms_series} ...")
@@ -63,7 +62,6 @@ async def movesense_task(pico_id, movesense_series=_MOVESENSE_SERIES):
             await asyncio.sleep_ms(100)
         await asyncio.sleep_ms(100)
 
-
 async def movesense_tasks(pico_id):
     devices = {}
     connections = {}
@@ -75,7 +73,7 @@ async def movesense_tasks(pico_id):
             devices[ms_series] = device
             print(f"Found Movesense sensor {ms_series}.")
         else:
-            print(f"Failed to find Movesense sensor {ms_series}.")
+            print(f"Failed to find Movesense sensor {ms_series}.")  
 
     while True:
         if state.trigger_ble_scan:
@@ -86,7 +84,7 @@ async def movesense_tasks(pico_id):
                     devices[ms_series] = device
                     print(f"Found Movesense sensor {ms_series}.")
                 else:
-                    print(f"Failed to find Movesense sensor {ms_series}.")
+                    print(f"Failed to find Movesense sensor {ms_series}.")  
             state.trigger_ble_scan = False
         if state.movesense_detect and state.running_state and not connected:
             if devices:
@@ -115,8 +113,7 @@ async def movesense_tasks(pico_id):
         else:
             await asyncio.sleep_ms(100)
         await asyncio.sleep_ms(100)
-
-
+            
 async def blink_task():
     while True:
         led.value(not led.value())
@@ -124,4 +121,3 @@ async def blink_task():
             await asyncio.sleep_ms(500)
         else:
             await asyncio.sleep_ms(1000)
-
