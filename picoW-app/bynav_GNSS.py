@@ -19,7 +19,7 @@ async def gnss_setup():
     
     # UART setup (GPIO 4 and 5 on Raspberry Pi Pico WH)
     rtk_uart = machine.UART(1, baudrate=UART_BAUD_RATE, tx=machine.Pin(TX_PIN), rx=machine.Pin(RX_PIN))
-    auth = ubinascii.b2a_base64(f"{NTRIP_CONFIG['username']}:{NTRIP_CONFIG['password']}".encode()).decode().strip()
+    auth = ubinascii.b2a_base64(f"{NTRIP_CONFIG['username_ntrip']}:{NTRIP_CONFIG['password_ntrip']}".encode()).decode().strip()
     gga = None
     i = 0
     
