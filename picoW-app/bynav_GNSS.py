@@ -60,8 +60,8 @@ async def gnss_setup():
 
     # TCP connection to NTRIP caster
     sock = usocket.socket()
-    sock.connect((ip_address, NTRIP_CONFIG['port']))
-    # sock.connect(("195.156.69.210", NTRIP_CONFIG['port']))
+    # sock.connect((ip_address, NTRIP_CONFIG['port']))
+    sock.connect(("195.156.69.210", NTRIP_CONFIG['port']))
     sock.send(request.encode())
     while True:
         line = sock.readline()
