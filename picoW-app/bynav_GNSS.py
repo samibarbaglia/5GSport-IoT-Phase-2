@@ -3,7 +3,6 @@ import usocket
 import time
 import ubinascii
 import uselect
-
 import os
 import uasyncio as asyncio
 import json
@@ -13,7 +12,6 @@ from password import NTRIP_CONFIG
 from data_queue import state, gnss_queue
 
 
-# SET UP GNSS SENSOR
 async def gnss_setup():
     print("Initializing GNSS sensor...")
     
@@ -32,12 +30,13 @@ async def gnss_setup():
                     gga_str = initial_GPGGA.decode().strip()
                     fields = gga_str.split(',')
                     fix_quality = fields[6]
+                    # Check fix > 0 + lat and lon != empty
                     if fix_quality != '0' and fields[2] != '' and fields[4] != '':
-                        print("GNSS successfully connected:", gga_str)
+                        print("GNSS successfully connected")
                         gga = gga_str
                         break
                     else:
-                        #print(f">> Test {i}, GGA found, no fix yet:", gga_str)
+                        # print(f">> GGA {i} found but no coordinates:", gga_str)
                         i += 1
                 except Exception:
                     pass
@@ -60,31 +59,30 @@ async def gnss_setup():
 
     # TCP connection to NTRIP caster
     sock = usocket.socket()
-    # sock.connect((ip_address, NTRIP_CONFIG['port']))
+    # sock.connect((ip_address, NTRIP_CONFIG['port'])) # TO DO: Check IP functionality
     sock.connect(("195.156.69.210", NTRIP_CONFIG['port']))
     sock.send(request.encode())
+    
     while True:
         line = sock.readline()
         if not line or line == b'\r\n':
             break
-
-    print("Connected to NTRIP caster, streaming RTCM...")
+    print("Connected to NTRIP caster")
     return sock, rtk_uart, gga
 
 
-# PARSE COORDINATES
 def parse_gpgga(sentence):
-    parts = sentence.split(',')
-    if parts[0] != "$GPGGA":
+    field = sentence.split(',')
+    if field[0] != "$GPGGA":
         return None
     try:
-        fix_quality = int(parts[6])
+        fix_quality = int(field[6])
         if fix_quality < 4:
             return None
-        lat_raw = parts[2]
-        lon_raw = parts[4]
-        lat_dir = parts[3]
-        lon_dir = parts[5]
+        lat_raw = field[2]
+        lon_raw = field[4]
+        lat_dir = field[3]
+        lon_dir = field[5]
         if not lat_raw or not lon_raw:
             return None
         
@@ -108,32 +106,32 @@ def parse_gpgga(sentence):
     except (ValueError, IndexError):
         return None
 
-# MAIN GNSS TASK
+
 async def gnss_task(sock, rtk_uart, picoW_id):
     poller = uselect.poll()
     poller.register(sock, uselect.POLLIN)
     last_gga_ms = time.ticks_ms()
-    print("Polling...")
+    # print("Polling")
 
-    # Recieve RTK correction data
+    # Receive RTK correction data
     while True:
         events = poller.poll(10)
         for fileno, event in events:
-            #print('Poll test 1')
+            # print('Poll test 1')
             if event & uselect.POLLIN:
                 try:
-                    rtcm_data = sock.recv(512)
-                    if rtcm_data:
-                        rtk_uart.write(rtcm_data)
-                        #print("Data forwarded to UART')
+                    rtk_data = sock.recv(512)
+                    if rtk_data:
+                        rtk_uart.write(rtk_data)
+                        # print("RTK data forwarded via UART')
                     else:
-                        print("No RTCM data")
+                        print("No RTK correction data")
                         return 
                 except OSError as e:
                     print("Socket error:", e)
                     return
                 
-        # Send new coordinate GGA sentences to NTRIP every 1 sec       
+        # Send new coordinates to NTRIP every 1 sec
         if rtk_uart.any():
             rtk_line = rtk_uart.readline()
             if rtk_line.startswith(b"$GPGGA"):
