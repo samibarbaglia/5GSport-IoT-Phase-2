@@ -1,6 +1,8 @@
-# 🌐 Innovation IoT Project
+# 🌐 Metropolia x Nokia 5G Sport Project (IoT)
 
-This project integrates a **Movesense device** and a **Bynav M10 module** with a **Raspberry Pi Pico WH**, forming an IoT system that collects movement and GNSS data and forwards it to an MQTT broker over Wi-Fi.
+This project was the second phase of Metropolia UAS' 5G Sport project for Nokia. It integrates a **Movesense device** and a **Bynav M10 module** with a **Raspberry Pi Pico WH**, forming an IoT system that collects movement and GNSS data and forwards it to an MQTT broker over Wi-Fi. 
+
+**Phase 2** added new GNSS functionality for better location accuracy by replacing DFRobot TEL0157 with Bynav M10. The respository for [Phase 1 can be found here](https://github.com/hannahhoang2704/IoTSport-IceHockey-Tracker).
 
 ---
 
@@ -29,19 +31,23 @@ The Pico WH functions as both a microcontroller, an IoT gateway, and RTK bridge,
 
 - Connects to the Movesense device using the GATT SensorData service to retrieve sensor data.
 - Reads location data from a GNSS module (Bynav M10).
-- Connects with an NTRIP caster, sends GNSS data to caster and forwards correction data back to module.
+- Connects to caster to send location data to VRS + forwards RTK correction data from VRS back to Bynav.
 - Forwards combined data to a pre-configured MQTT broker over Wi-Fi.
 
 Tested on MicroPython firmware v1.22.
 
 ### 🧠 MicroPython firmware v1.22
 
-🔗 The BLE stack is re-configured with built firmware `micropython-v1.22-blestack.uf2`, allow the Pico WH to connect to up to 3 peripherals simultaneously with GATT protocol.
+The BLE stack is re-configured with built firmware `micropython-v1.22-blestack.uf2`, allowing the Pico WH to connect to up to 3 peripherals simultaneously with GATT protocol.
 
 ### 📦 Required MicroPython Packages
 
 - `micropython-umqtt.simple`
 - `micropython-umqtt.robust`
+
+### 🔗  RTK and NTRIP connectivity
+
+The project requires the usage of [FINPOS RTK-service](https://www.maanmittauslaitos.fi/en/finpos/rtk) provided by **The National Land Survey of Finland** (fin. Maanmittauslaitos). Create a user on the service and apply for a **testing** licence. Approval takes around 30 minutes and the licence is valid for 3 months at a time. 
 
 ### 🎛 Features & Usability
 
