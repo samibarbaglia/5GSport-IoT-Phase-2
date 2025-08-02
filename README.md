@@ -5,7 +5,6 @@ This project was the second phase of Metropolia UAS' 5G Sport project for Nokia.
 **Phase 2** added new GNSS functionality for better location accuracy by replacing DFRobot TEL0157 with Bynav M10. The respository for [Phase 1 can be found here](https://github.com/hannahhoang2704/IoTSport-IceHockey-Tracker).
 
 ---
-
 ## 📱 movesense-device-app
 
 Firmware application for the Movesense device.
